@@ -1,26 +1,20 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { CSSReset } from '@chakra-ui/core';
+import { ThemeProvider } from '@chakra-ui/core';
+import customTheme from './theme/theme';
+import Generator from './components/Generator';
+import Layout from './Layout';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <ThemeProvider theme={customTheme}>
+            <CSSReset />
+            <Layout>
+                <Generator />
+            </Layout>
+        </ThemeProvider>
+    );
 }
 
 export default App;
