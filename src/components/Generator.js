@@ -9,25 +9,38 @@ import {
     NumberDecrementStepper,
     FormControl,
     Button,
+    Text,
 } from '@chakra-ui/core';
 import { Formik } from 'formik';
-import textGenerator from '../utils/text-generator';
+import { generator, generateFromNbWords } from '../utils/text-generator';
 
 Generator.propTypes = {};
 function Generator(props) {
-    const [result, setResult] = useState('');
-
+    const [result, setResult] = useState([]);
+    const [size, setSize] = useState(5);
     return (
         <>
             <Box p="6">
                 <Formik
-                    initialValues={{ nbValue: 5, type: '' }}
-                    validate={values => {
+                    initialValues={{ nbValue: 5, type: 'paragraphe' }}
+                    validate={(values) => {
                         const errors = {};
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
-                        setResult(textGenerator(2));
+                        switch (values.type) {
+                            case 'paragraphe':
+                                setResult(generator(values.nbValue));
+                                break;
+                            case 'mots':
+                                setResult([
+                                    generateFromNbWords(values.nbValue),
+                                ]);
+                                break;
+                            default:
+                            // nothing
+                        }
+
                         setSubmitting(false);
                     }}
                 >
@@ -44,14 +57,16 @@ function Generator(props) {
                         <form onSubmit={handleSubmit}>
                             <FormControl as="fieldset">
                                 <NumberInput
-                                    defaultValue={5}
-                                    name="nbValue"
-                                    min={1}
-                                    max={30}
-                                    value={values.nbValue}
-                                    onChange={handleChange}
+                                    defaultValue={15}
+                                    min={10}
+                                    max={20}
                                 >
-                                    <NumberInputField type="number" />
+                                    <NumberInputField
+                                        name="nbValue"
+                                        value={values.nbValue}
+                                        onChange={handleChange}
+                                        type="number"
+                                    />
                                     <NumberInputStepper>
                                         <NumberIncrementStepper />
                                         <NumberDecrementStepper />
@@ -77,14 +92,22 @@ function Generator(props) {
                                 isLoading={props.isSubmitting}
                                 type="submit"
                             >
-                                Vends moi du rêves !
+                                <span role="img" aria-label="send">
+                                    🍆🍆🍆🍆🍆
+                                </span>
                             </Button>
                         </form>
                     )}
                 </Formik>
             </Box>
             RESULTATS
-            <Box p="6">{result}</Box>
+            <Box p="6">
+                {result.map((value, index) => (
+                    <Text mb={4} key={index}>
+                        {value}
+                    </Text>
+                ))}
+            </Box>
         </>
     );
 }
